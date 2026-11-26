@@ -118,6 +118,7 @@
     }
     .animate-seamless-marquee {
       display: flex;
+      align-items: center;
       width: max-content;
       animation: seamless-marquee 15s linear infinite;
     }
@@ -835,9 +836,9 @@
           
           <!-- TAB CONTENT 1: 주민등록 확인서비스 -->
           <div id="id-panel-resident" class="id-panel w-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
-            <!-- 가운데 기준 왼쪽 하늘색, 오른쪽 보라색 그라데이션 띠 -->
-            <div class="bg-gradient-to-r from-sky-400 via-sky-400 to-purple-600 text-white px-3 py-1.5 text-[11px] font-semibold tracking-tight overflow-hidden relative z-20">
-              <span class="animate-seamless-marquee">
+            <!-- 가운데 기준 왼쪽 하늘색, 오른쪽 보라색 그라데이션 띠 (모바일에서 글씨가 위아래로 잘리지 않도록 min-h 및 flex 수직 중앙 정렬 적용) -->
+            <div class="bg-gradient-to-r from-sky-400 via-sky-400 to-purple-600 text-white px-3 py-2 min-h-[28px] flex items-center text-[11px] leading-none font-semibold tracking-tight overflow-hidden relative z-20 shrink-0">
+              <span class="animate-seamless-marquee whitespace-nowrap">
                 <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)        </span>
                 <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)        </span>
               </span>
