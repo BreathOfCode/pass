@@ -74,8 +74,8 @@
       100% { transform: rotate(360deg); }
     }
     @keyframes floatTaegeuk {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(6px, -6px) rotate(20deg); }
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     .id-bg-animated {
       background-color: #FBF8F2;
@@ -102,8 +102,13 @@
       width: 120px;
       height: 120px;
       opacity: 0.35;
-      animation: floatTaegeuk 5s ease-in-out infinite;
+      animation: floatTaegeuk 12s linear infinite;
       pointer-events: none;
+    }
+    /* 상세정보 표시 시 위아래 자연스럽게 연결되어 계속 돌아가는 통합 태극무늬 */
+    .unified-spinning-taegeuk {
+      animation: rotateGlobe 14s linear infinite;
+      transform-origin: center center;
     }
 
     /* 끊김 없이 바로 이어지는 무한 롤링 애니메이션 */
@@ -116,6 +121,34 @@
       width: max-content;
       animation: seamless-marquee 15s linear infinite;
     }
+
+    /* 비밀번호 완료 시 하얀 원 안에서 P A S S 글자들이 위아래로 슈루룩 이동하며 바뀌는 애니메이션 */
+    @keyframes passSlotReel {
+      0% { transform: translateY(18px); }
+      25% { transform: translateY(0px); }
+      55% { transform: translateY(-18px); }
+      80% { transform: translateY(0px); }
+      100% { transform: translateY(-18px); }
+    }
+    .pass-reel-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      animation: passSlotReel 0.55s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+    .pass-reel-delay-1 { animation-delay: 0s; }
+    .pass-reel-delay-2 { animation-delay: 0.06s; }
+    .pass-reel-delay-3 { animation-delay: 0.12s; }
+    .pass-reel-delay-4 { animation-delay: 0.18s; }
+
+    /* PASS신분증 화면이 오른쪽에서 왼쪽으로 슬라이드하면서 나오는 애니메이션 */
+    @keyframes slideInFromRight {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(0); }
+    }
+    .animate-slide-in-right {
+      animation: slideInFromRight 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
   </style>
 </head>
 <body class="bg-gray-100 flex justify-center items-center min-h-screen sm:py-4">
@@ -123,8 +156,8 @@
   <!-- Mobile Frame Container -->
   <div class="relative w-full max-w-[420px] h-[100dvh] sm:h-[890px] bg-white sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col border border-gray-200">
     
-    <!-- 1. SPLASH SCREEN (5초 유지) -->
-    <div id="splashScreen" class="absolute inset-0 z-50 bg-white flex flex-col items-center justify-between py-12 transition-opacity duration-700 pointer-events-auto">
+    <!-- 1. SPLASH SCREEN (3초 유지) -->
+    <div id="splashScreen" class="absolute inset-0 z-50 bg-white flex flex-col items-center justify-between py-12 pointer-events-auto">
       <div></div>
       
       <!-- Brand Logo -->
@@ -161,52 +194,107 @@
       </div>
     </div>
 
-    <!-- 2. PIN AUTHENTICATION SCREEN -->
-    <div id="pinScreen" class="absolute inset-0 z-40 bg-white flex flex-col justify-between p-6 opacity-0 pointer-events-none transition-opacity duration-500">
-      <div class="pt-8 text-center">
-        <div class="flex items-center justify-center gap-1 mb-6">
-          <div class="w-[20px] h-[28px] bg-[#FF2D46] rounded-[2px] flex items-center justify-center">
-            <span class="font-pass text-white text-[20px] leading-none">P</span>
+    <!-- 2. PIN AUTHENTICATION SCREEN (첨부 이미지 기반 UI 구현) -->
+    <div id="pinScreen" class="absolute inset-0 z-40 bg-white flex flex-col justify-between hidden">
+      <!-- 상단 헤더: 좌측 PASS 로고 + 우측 X 버튼 -->
+      <div>
+        <div class="px-5 pt-4 pb-3 flex items-center justify-between">
+          <div class="flex items-center gap-[3px]">
+            <div class="w-[18px] h-[25px] bg-[#FF2D46] rounded-[1px] flex items-center justify-center">
+              <span class="font-pass text-white text-[18px] leading-none">P</span>
+            </div>
+            <div class="w-[18px] h-[25px] bg-[#FF2D46] rounded-[1px] flex items-center justify-center">
+              <span class="font-pass text-white text-[18px] leading-none">A</span>
+            </div>
+            <div class="w-[18px] h-[25px] bg-[#FF2D46] rounded-[1px] flex items-center justify-center">
+              <span class="font-pass text-white text-[18px] leading-none">S</span>
+            </div>
+            <div class="w-[18px] h-[25px] bg-[#FF2D46] rounded-[1px] flex items-center justify-center">
+              <span class="font-pass text-white text-[18px] leading-none">S</span>
+            </div>
           </div>
-          <div class="w-[20px] h-[28px] bg-[#FF2D46] rounded-[2px] flex items-center justify-center">
-            <span class="font-pass text-white text-[20px] leading-none">A</span>
-          </div>
-          <div class="w-[20px] h-[28px] bg-[#FF2D46] rounded-[2px] flex items-center justify-center">
-            <span class="font-pass text-white text-[20px] leading-none">S</span>
-          </div>
-          <div class="w-[20px] h-[28px] bg-[#FF2D46] rounded-[2px] flex items-center justify-center">
-            <span class="font-pass text-white text-[20px] leading-none">S</span>
-          </div>
-        </div>
-        <h2 class="text-[19px] font-bold text-gray-900 tracking-tight">비밀번호를 입력해 주세요</h2>
-        <p class="text-[13px] text-gray-400 mt-1">PASS 안전 인증을 위해 6자리를 입력합니다</p>
 
-        <div class="flex items-center justify-center gap-3.5 mt-8">
-          <div id="pin-0" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
-          <div id="pin-1" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
-          <div id="pin-2" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
-          <div id="pin-3" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
-          <div id="pin-4" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
-          <div id="pin-5" class="w-3.5 h-3.5 rounded-full border-2 border-gray-300 transition-all duration-200"></div>
+          <button onclick="completeAuth()" class="p-1 text-gray-800 active:opacity-60 rounded-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 비밀번호 / 생체·간편인증 탭 영역 -->
+        <div class="flex items-center justify-center gap-8 mt-6">
+          <button id="authTabPin" class="text-[19px] font-extrabold text-gray-950 pb-2 border-b-[2.5px] border-gray-950 tracking-tight rounded-none">
+            비밀번호
+          </button>
+          <button id="authTabBio" onclick="startFaceID()" class="text-[19px] font-medium text-gray-800 pb-2 border-b-[2.5px] border-transparent tracking-tight active:opacity-60 rounded-none">
+            생체/간편인증
+          </button>
+        </div>
+
+        <!-- 6자리 회색 원형 도트 인디케이터 -->
+        <div class="flex items-center justify-center gap-3.5 mt-9">
+          <div id="pin-0" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+          <div id="pin-1" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+          <div id="pin-2" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+          <div id="pin-3" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+          <div id="pin-4" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+          <div id="pin-5" class="w-3.5 h-3.5 rounded-full bg-[#8E8E93]"></div>
+        </div>
+
+        <!-- 자동로그인 설정하기 체크 옵션 -->
+        <div class="flex items-center justify-center mt-8">
+          <button onclick="toggleAutoLogin()" class="flex items-center gap-2 text-gray-400 active:opacity-70 rounded-none">
+            <span id="autoLoginCircle" class="w-6 h-6 rounded-full border border-gray-300 flex items-center justify-center text-gray-300 transition-colors">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </span>
+            <span id="autoLoginText" class="text-[14px] font-medium text-gray-400">자동로그인 설정하기</span>
+          </button>
         </div>
       </div>
 
-      <div class="pb-4">
+      <!-- 하단 영역: 비밀번호 재설정 링크 + 전체 너비 격자형 키패드 -->
+      <div>
         <div class="flex justify-center mb-4">
-          <button onclick="startFaceID()" class="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-50 border border-gray-200 text-gray-700 text-xs font-semibold active:bg-gray-100 transition-colors">
-            <svg class="w-4 h-4 text-blue-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="3" y="3" width="18" height="18" rx="5"></rect>
-              <path d="M7 8h.01M17 8h.01M9 16c1.5 1 4.5 1 6 0M12 11v2"></path>
-            </svg>
-            Face ID로 빠른 인증
+          <button onclick="alert('비밀번호 재설정 본인인증 화면으로 이동합니다.')" class="text-[13px] text-gray-500 underline underline-offset-4 font-medium active:text-gray-800 rounded-none">
+            비밀번호 재설정
           </button>
         </div>
-        <div id="keypad" class="grid grid-cols-3 gap-3 max-w-[300px] mx-auto text-center"></div>
+        <div id="keypad" class="grid grid-cols-3 border-t border-gray-200 bg-white"></div>
+      </div>
+    </div>
+
+    <!-- 인증 완료 후 하얀 원 안에서 PASS 글자가 위아래로 슈루룩 이동하면서 바뀌는 애니메이션 오버레이 -->
+    <div id="passLogoFlash" class="absolute inset-0 z-50 bg-white flex items-center justify-center hidden">
+      <div class="w-16 h-16 rounded-full bg-white shadow-lg border border-gray-100 flex items-center justify-center relative overflow-hidden">
+        <div class="h-[18px] overflow-hidden flex items-center gap-[2px]">
+          <div class="pass-reel-col pass-reel-delay-1">
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">S</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">P</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">A</span>
+          </div>
+          <div class="pass-reel-col pass-reel-delay-2">
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">P</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">A</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">S</span>
+          </div>
+          <div class="pass-reel-col pass-reel-delay-3">
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">A</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">S</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">P</span>
+          </div>
+          <div class="pass-reel-col pass-reel-delay-4">
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">P</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">S</span>
+            <span class="font-pass text-[#FF2D46] text-[13px] h-[18px] flex items-center">A</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Face ID Scanning Overlay Modal -->
-    <div id="faceIdModal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+    <div id="faceIdModal" class="absolute inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center hidden">
       <div class="w-[200px] h-[200px] bg-white/90 rounded-[28px] p-6 shadow-2xl flex flex-col items-center justify-center relative border border-white/40">
         <div class="relative w-24 h-24 flex items-center justify-center">
           <svg class="w-20 h-20 text-gray-800" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -217,7 +305,7 @@
           </svg>
           <div id="scanLine" class="scan-line absolute left-2 right-2 h-[2px] bg-blue-500 shadow-[0_0_8px_#3b82f6]"></div>
           <div id="faceSuccess" class="absolute inset-0 flex items-center justify-center hidden">
-            <div class="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center text-white scale-110 transition-transform">
+            <div class="w-16 h-16 rounded-full bg-emerald-500 flex items-center justify-center text-white scale-110">
               <svg class="w-9 h-9" fill="none" stroke="currentColor" stroke-width="3" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
               </svg>
@@ -229,10 +317,10 @@
     </div>
 
     <!-- 3. MAIN APP CONTENT CONTAINER (VIEWS) -->
-    <div id="appContainer" class="flex-1 relative overflow-hidden bg-[#F4F5F7] opacity-0 transition-opacity duration-500 flex flex-col">
+    <div id="appContainer" class="flex-1 h-full relative overflow-hidden bg-[#F4F5F7] hidden flex-col">
 
       <!-- TAB 1: HOME VIEW (세로 스크롤 피드) -->
-      <div id="view-home" class="tab-view flex-1 overflow-y-auto custom-scroll pb-20">
+      <div id="view-home" class="tab-view flex-1 h-full overflow-y-auto custom-scroll pb-24">
         
         <!-- Sticky Header -->
         <div class="sticky top-0 z-30 bg-white/95 backdrop-blur-md px-4 py-3 flex items-center justify-between border-b border-gray-100">
@@ -252,13 +340,13 @@
           </div>
 
           <div class="flex items-center gap-3">
-            <button onclick="openSubModal('알림 보관함', '수신된 최신 알림 및 서비스 안내 내역입니다.')" class="relative p-1 text-gray-700">
+            <button onclick="openSubModal('알림 보관함', '수신된 최신 알림 및 서비스 안내 내역입니다.')" class="relative p-1 text-gray-700 rounded-none">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
               </svg>
               <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-[#FF2D46] rounded-full"></span>
             </button>
-            <button onclick="switchTab('more')" class="p-1 text-gray-700">
+            <button onclick="switchTab('more')" class="p-1 text-gray-700 rounded-none">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
                 <circle cx="12" cy="12" r="3"></circle>
@@ -285,7 +373,7 @@
             <div class="flex flex-col gap-2.5">
               <div class="grid grid-cols-2 gap-2">
                 <!-- 인증서 -->
-                <button onclick="openPage('certificate')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-2xl flex flex-col items-center justify-center text-center transition-colors border border-gray-100">
+                <button onclick="openPage('certificate')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-none flex flex-col items-center justify-center text-center transition-colors border border-gray-100">
                   <svg class="w-6 h-6 text-gray-700 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
                   </svg>
@@ -293,7 +381,7 @@
                 </button>
 
                 <!-- QR인증 -->
-                <button onclick="openPage('qrAuth')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-2xl flex flex-col items-center justify-center text-center transition-colors border border-gray-100">
+                <button onclick="openPage('qrAuth')" class="bg-gray-50 hover:bg-gray-100 p-3 rounded-none flex flex-col items-center justify-center text-center transition-colors border border-gray-100">
                   <svg class="w-6 h-6 text-gray-700 mb-1" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path>
                   </svg>
@@ -314,9 +402,9 @@
               </a>
             </div>
 
-            <!-- 우측 카드: PASS신분증 카드 -->
+            <!-- 우측 카드: PASS신분증 카드 (각진 사각형) -->
             <div class="flex flex-col justify-between">
-              <div onclick="openIdDetailView()" class="h-[105px] bg-gradient-to-br from-[#685BFF] to-[#5136FD] rounded-2xl p-3.5 text-white flex flex-col justify-between shadow-[0_4px_14px_rgba(104,91,255,0.35)] active:scale-[0.98] transition-transform cursor-pointer">
+              <div onclick="openIdDetailView()" class="h-[105px] bg-gradient-to-br from-[#685BFF] to-[#5136FD] rounded-none p-3.5 text-white flex flex-col justify-between shadow-[0_4px_14px_rgba(104,91,255,0.35)] active:scale-[0.98] transition-transform cursor-pointer">
                 <div>
                   <p class="text-[13px] font-medium leading-tight opacity-90"><span id="mainCardName" class="font-bold">회원</span> 님의</p>
                   <p class="text-[14px] font-extrabold tracking-tight mt-0.5">PASS신분증</p>
@@ -419,7 +507,7 @@
                 <p class="text-[11px] text-gray-400">AD • 오즈티켓</p>
               </div>
             </div>
-            <button class="text-[11px] font-medium text-gray-500 px-2 py-1 rounded bg-white border border-gray-200">문의하기</button>
+            <button class="text-[11px] font-medium text-gray-500 px-2 py-1 rounded-none bg-white border border-gray-200">문의하기</button>
           </a>
 
           <div class="pt-1">
@@ -572,13 +660,13 @@
               <p class="text-xs font-semibold text-gray-800">[9월 추석 프로모션] 슬립앤...</p>
               <p class="text-[11px] text-gray-400">AD • Sleepnsleepmall KR</p>
             </div>
-            <button class="text-[11px] font-medium text-blue-600 px-2.5 py-1 rounded bg-white border border-gray-200">바로구매</button>
+            <button class="text-[11px] font-medium text-blue-600 px-2.5 py-1 rounded-none bg-white border border-gray-200">바로구매</button>
           </a>
         </div>
       </div>
 
       <!-- TAB 2: BENEFIT VIEW -->
-      <div id="view-benefit" class="tab-view flex-1 overflow-y-auto custom-scroll pb-20 hidden">
+      <div id="view-benefit" class="tab-view flex-1 h-full overflow-y-auto custom-scroll pb-24 hidden">
         <div class="sticky top-0 z-30 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
           <h2 class="text-base font-extrabold text-gray-900">혜택 라운지</h2>
           <span class="text-xs font-semibold text-indigo-600">내 포인트 12,450P</span>
@@ -587,7 +675,7 @@
           <div class="bg-gradient-to-r from-amber-400 to-orange-400 rounded-3xl p-5 text-white shadow-sm">
             <p class="text-xs opacity-90">매일 터지는 럭키 룰렛</p>
             <h3 class="text-lg font-black mt-1">오늘의 보너스 포인트 받기</h3>
-            <button onclick="alert('룰렛이 회전하여 보너스 100P가 적립되었습니다!')" class="mt-3 bg-white text-orange-600 font-bold text-xs px-4 py-2 rounded-xl shadow-sm active:scale-95 transition-transform">룰렛 돌리기</button>
+            <button onclick="alert('룰렛이 회전하여 보너스 100P가 적립되었습니다!')" class="mt-3 bg-white text-orange-600 font-bold text-xs px-4 py-2 rounded-none shadow-sm active:scale-95 transition-transform">룰렛 돌리기</button>
           </div>
 
           <div class="bg-white rounded-2xl p-4 border border-gray-100 shadow-sm space-y-3">
@@ -606,7 +694,7 @@
       </div>
 
       <!-- TAB 3: MY PASS VIEW -->
-      <div id="view-mypass" class="tab-view flex-1 overflow-y-auto custom-scroll pb-20 hidden">
+      <div id="view-mypass" class="tab-view flex-1 h-full overflow-y-auto custom-scroll pb-24 hidden">
         <div class="sticky top-0 z-30 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
           <h2 class="text-base font-extrabold text-gray-900">My PASS</h2>
           <span class="text-xs bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-full font-bold">보안 인증 정상</span>
@@ -629,7 +717,7 @@
       </div>
 
       <!-- TAB 4: WALLET VIEW -->
-      <div id="view-wallet" class="tab-view flex-1 overflow-y-auto custom-scroll pb-20 hidden">
+      <div id="view-wallet" class="tab-view flex-1 h-full overflow-y-auto custom-scroll pb-24 hidden">
         <div class="sticky top-0 z-30 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
           <h2 class="text-base font-extrabold text-gray-900">전자지갑</h2>
           <a href="https://www.gov.kr" target="_blank" rel="noopener noreferrer" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-lg">+ 서류 추가발급</a>
@@ -661,7 +749,7 @@
       </div>
 
       <!-- TAB 5: MORE VIEW -->
-      <div id="view-more" class="tab-view flex-1 overflow-y-auto custom-scroll pb-20 hidden">
+      <div id="view-more" class="tab-view flex-1 h-full overflow-y-auto custom-scroll pb-24 hidden">
         <div class="sticky top-0 z-30 bg-white px-4 py-3 flex items-center justify-between border-b border-gray-100">
           <h2 class="text-base font-extrabold text-gray-900">전체 메뉴</h2>
         </div>
@@ -679,27 +767,27 @@
       </div>
 
       <!-- 4. SUB PAGES OVERLAY -->
-      <div id="subPageOverlay" class="absolute inset-0 bg-[#F4F5F7] z-50 translate-x-full transition-transform duration-300 flex flex-col">
+      <div id="subPageOverlay" class="absolute inset-0 bg-[#F4F5F7] z-50 hidden flex-col">
         <div class="bg-white px-4 py-3.5 border-b border-gray-100 flex items-center justify-between shadow-sm sticky top-0 z-10">
-          <button onclick="closeSubPage()" class="flex items-center gap-1.5 text-gray-800 text-sm font-bold active:opacity-60">
+          <button onclick="closeSubPage()" class="flex items-center gap-1.5 text-gray-800 text-sm font-bold active:opacity-60 rounded-none">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"></path></svg>
             <span id="subPageTitle">상세 페이지</span>
           </button>
           <div class="flex items-center gap-2">
-            <button onclick="alert('데이터가 최신 상태로 갱신되었습니다.')" class="p-1 text-gray-400 hover:text-gray-600">
+            <button onclick="alert('데이터가 최신 상태로 갱신되었습니다.')" class="p-1 text-gray-400 hover:text-gray-600 rounded-none">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
             </button>
-            <button onclick="closeSubPage()" class="text-gray-400 hover:text-gray-700 text-xs font-bold px-2 py-0.5 rounded bg-gray-100">닫기</button>
+            <button onclick="closeSubPage()" class="text-gray-400 hover:text-gray-700 text-xs font-bold px-2 py-0.5 rounded-none bg-gray-100">닫기</button>
           </div>
         </div>
 
         <div id="subPageContent" class="flex-1 overflow-y-auto custom-scroll p-4 space-y-4 pb-12"></div>
       </div>
 
-      <!-- 5. 모바일 신분증 상세 확인 화면 -->
-      <div id="idDetailOverlay" class="absolute inset-0 bg-[#E9EDF0] z-40 translate-x-full transition-transform duration-300 flex flex-col">
+      <!-- 5. 모바일 신분증 상세 확인 화면 (오른쪽에서 왼쪽으로 슬라이드하며 나오는 화면) -->
+      <div id="idDetailOverlay" class="absolute inset-0 bg-[#E9EDF0] z-40 hidden flex-col">
         <header class="bg-white px-4 pt-3 pb-2 flex items-center justify-between border-b border-gray-100 shrink-0">
-          <button onclick="closeIdDetailView()" class="p-1 text-gray-800 active:opacity-60">
+          <button onclick="closeIdDetailView()" class="p-1 text-gray-800 active:opacity-60 rounded-none">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
@@ -708,13 +796,13 @@
           <h1 class="text-[17px] font-extrabold text-gray-900 tracking-tight">PASS신분증</h1>
 
           <div class="flex items-center gap-3">
-            <button class="p-1 text-gray-800 active:opacity-60">
+            <button class="p-1 text-gray-800 active:opacity-60 rounded-none">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 8V6a2 2 0 012-2h2M4 16v2a2 2 0 002 2h2m8-16h2a2 2 0 012 2v2m-4 12h2a2 2 0 002-2v-2" />
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6" />
               </svg>
             </button>
-            <button onclick="openUserEditModal()" class="p-1 text-gray-800 active:opacity-60">
+            <button onclick="handleSettingsTripleClick()" class="p-1 text-gray-800 active:opacity-60 rounded-none">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                 <circle cx="12" cy="12" r="3"></circle>
@@ -724,21 +812,21 @@
         </header>
 
         <nav class="bg-white px-4 flex items-center justify-between border-b border-gray-200 shrink-0 text-sm overflow-x-auto custom-scroll">
-          <button id="id-tab-btn-resident" onclick="switchIdSubTab('resident')" class="id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-950 font-bold border-b-2 border-gray-950 shrink-0 transition-colors">
+          <button id="id-tab-btn-resident" onclick="switchIdSubTab('resident')" class="id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-950 font-bold border-b-2 border-gray-950 shrink-0 transition-colors rounded-none">
             <span>주민등록</span>
-            <span class="id-tab-badge text-[9px] bg-slate-100 text-gray-700 px-1 py-0.5 rounded leading-none font-semibold border border-gray-200">확인<br/>서비스</span>
+            <span class="id-tab-badge text-[9px] bg-slate-100 text-gray-700 px-1 py-0.5 rounded-none leading-none font-semibold border border-gray-200">확인<br/>서비스</span>
           </button>
 
-          <button id="id-tab-btn-driver" onclick="switchIdSubTab('driver')" class="id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-400 font-medium hover:text-gray-600 shrink-0 transition-colors">
+          <button id="id-tab-btn-driver" onclick="switchIdSubTab('driver')" class="id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-400 font-medium hover:text-gray-600 shrink-0 transition-colors rounded-none">
             <span>운전면허</span>
-            <span class="id-tab-badge text-[9px] bg-gray-50 text-gray-400 px-1 py-0.5 rounded leading-none border border-gray-200">확인<br/>서비스</span>
+            <span class="id-tab-badge text-[9px] bg-gray-50 text-gray-400 px-1 py-0.5 rounded-none leading-none border border-gray-200">확인<br/>서비스</span>
           </button>
 
-          <button id="id-tab-btn-pet" onclick="switchIdSubTab('pet')" class="id-tab-btn pb-2.5 pt-2 text-gray-400 font-medium hover:text-gray-600 shrink-0 px-1 transition-colors">
+          <button id="id-tab-btn-pet" onclick="switchIdSubTab('pet')" class="id-tab-btn pb-2.5 pt-2 text-gray-400 font-medium hover:text-gray-600 shrink-0 px-1 transition-colors rounded-none">
             <span>펫신분증</span>
           </button>
 
-          <button id="id-tab-btn-ticket" onclick="switchIdSubTab('ticket')" class="id-tab-btn pb-2.5 pt-2 text-gray-400 font-medium hover:text-gray-600 shrink-0 px-1 transition-colors">
+          <button id="id-tab-btn-ticket" onclick="switchIdSubTab('ticket')" class="id-tab-btn pb-2.5 pt-2 text-gray-400 font-medium hover:text-gray-600 shrink-0 px-1 transition-colors rounded-none">
             <span>스마트티켓</span>
           </button>
         </nav>
@@ -746,103 +834,116 @@
         <main class="flex-1 overflow-y-auto custom-scroll p-4 flex flex-col justify-start">
           
           <!-- TAB CONTENT 1: 주민등록 확인서비스 -->
-          <div id="id-panel-resident" class="id-panel w-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col">
-            <div class="bg-[#5668FF] text-white px-3 py-1.5 text-[11px] font-semibold tracking-tight overflow-hidden relative">
+          <div id="id-panel-resident" class="id-panel w-full bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden flex flex-col relative">
+            <!-- 가운데 기준 왼쪽 하늘색, 오른쪽 보라색 그라데이션 띠 -->
+            <div class="bg-gradient-to-r from-sky-400 via-sky-400 to-purple-600 text-white px-3 py-1.5 text-[11px] font-semibold tracking-tight overflow-hidden relative z-20">
               <span class="animate-seamless-marquee">
-                <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-                <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)        </span>
+                <span>주민등록증 이미지 위변조 및 부정 사용 금지 (위반시 3년 이하의 징역 또는 3천만원 이하의 벌금)        </span>
               </span>
             </div>
 
-            <div class="relative h-[210px] id-bg-animated p-4 flex justify-center items-end border-b border-amber-100/60 overflow-hidden">
-              <svg class="animated-globe" viewBox="0 0 100 100" fill="none" stroke="#D1C299" stroke-width="1.5">
-                <circle cx="50" cy="50" r="46"/>
-                <ellipse cx="50" cy="50" rx="46" ry="18"/>
-                <ellipse cx="50" cy="50" rx="18" ry="46"/>
-                <line x1="4" y1="50" x2="96" y2="50"/>
-                <line x1="50" y1="4" x2="50" y2="96"/>
-              </svg>
-              <svg class="animated-taegeuk" viewBox="0 0 100 100" fill="#E2D4B5">
-                <path d="M50 5 a45 45 0 0 1 0 90 a22.5 22.5 0 0 1 0 -45 a22.5 22.5 0 0 0 0 -45 z"/>
-              </svg>
-
-              <div class="absolute -left-12 -top-12 w-52 h-52 rounded-full border border-amber-300/40 opacity-70 pointer-events-none"></div>
-              <div class="absolute left-8 top-0 bottom-0 w-[1px] bg-amber-200/50 z-10"></div>
-
-              <div class="absolute right-2 top-4 bottom-4 flex items-center z-10">
-                <span id="idTimestamp" class="text-[10px] text-amber-700/70 font-mono tracking-wider rotate-90 origin-center whitespace-nowrap">
-                  2026.09.28 04:35:25
-                </span>
-              </div>
-
-              <!-- Profile Box (사진 첨부 시 실시간 교체 영역) -->
-              <div class="w-[145px] h-[175px] bg-[#E8EEF3] rounded-t-xl relative overflow-hidden flex items-end justify-center shadow-inner border border-white/60 z-10">
-                <img id="idProfileImg" src="" alt="증명사진" class="w-full h-full object-cover hidden">
-                <svg id="idDefaultSilhouette" class="w-full h-full text-white" viewBox="0 0 100 120" fill="currentColor">
-                  <circle cx="50" cy="38" r="22" />
-                  <path d="M12 120 C12 85 28 72 50 72 C72 72 88 85 88 120 Z" />
+            <!-- 카드 상단+하단을 하나로 자연스럽게 이어주는 통합 회전 태극무늬 (상세정보 표시 시 활성화) -->
+            <div id="idUnifiedCardWrapper" class="relative flex flex-col">
+              <div id="idUnifiedTaegeukLayer" class="hidden absolute inset-0 pointer-events-none z-0 overflow-hidden flex items-center justify-center">
+                <svg class="unified-spinning-taegeuk w-[380px] h-[380px] opacity-40" viewBox="0 0 200 200">
+                  <circle cx="100" cy="100" r="92" fill="#EFE3C6"/>
+                  <path d="M100 8 A92 92 0 0 1 100 192 A46 46 0 0 1 100 100 A46 46 0 0 0 100 8 Z" fill="#DECAA2"/>
+                  <circle cx="100" cy="54" r="46" fill="#DECAA2"/>
+                  <circle cx="100" cy="146" r="46" fill="#F6EFE0"/>
                 </svg>
               </div>
-            </div>
 
-            <!-- Name & Details & QR Countdown -->
-            <div class="p-5 flex items-center justify-between gap-4">
-              <div class="flex flex-col justify-between py-1 flex-1">
-                <div>
-                  <p class="text-[11px] font-medium text-gray-500">주민등록증 모바일 확인서비스</p>
-                  
-                  <div class="flex items-center justify-between mt-1">
-                    <h2 id="idCardName" class="text-2xl font-black text-gray-900 tracking-tight">회원</h2>
-                    
-                    <div id="toggleContainer" class="hidden items-center bg-gray-100 p-1 rounded-full border border-gray-200 ml-auto">
-                      <label class="relative inline-flex items-center cursor-pointer">
-                        <input type="checkbox" id="maskedToggleSwitch" onchange="toggleMaskedRRN()" class="sr-only peer">
-                        <div class="w-12 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
-                      </label>
-                    </div>
-                  </div>
+              <div id="idBgGraphicArea" class="relative h-[210px] id-bg-animated p-4 flex justify-center items-end border-b border-amber-100/60 overflow-hidden transition-all duration-300">
+                <svg class="animated-globe" viewBox="0 0 100 100" fill="none" stroke="#D1C299" stroke-width="1.5">
+                  <circle cx="50" cy="50" r="46"/>
+                  <ellipse cx="50" cy="50" rx="46" ry="18"/>
+                  <ellipse cx="50" cy="50" rx="18" ry="46"/>
+                  <line x1="4" y1="50" x2="96" y2="50"/>
+                  <line x1="50" y1="4" x2="50" y2="96"/>
+                </svg>
+                <svg id="idTaegeukSvg" class="animated-taegeuk" viewBox="0 0 100 100" fill="#E2D4B5">
+                  <path d="M50 5 a45 45 0 0 1 0 90 a22.5 22.5 0 0 1 0 -45 a22.5 22.5 0 0 0 0 -45 z"/>
+                </svg>
 
-                  <div id="idCardDetailedInfo" class="hidden space-y-1 mt-2 text-xs">
-                    <p class="text-gray-900 font-extrabold font-mono">
-                      <span id="idCardBirth">950101</span> - <span id="idCardMaskedRRN" data-raw="[RRN Omitted]">*******</span>
-                    </p>
-                    <p id="idCardAddressDisplay" class="text-[11px] text-gray-700 font-semibold pt-0.5">
-                      서울특별시 강남구 테헤란로 123, 패스아파트 101동 202호
-                    </p>
-                    <div class="text-[10px] text-gray-400 space-y-0.5 pt-1">
-                      <p>발급일: <span id="idCardIssueDate" class="font-semibold text-gray-700">2023.04.15</span></p>
-                      <p>발급: <span id="idCardIssuer" class="font-semibold text-gray-700">서울특별시 강남구청장</span></p>
-                    </div>
-                  </div>
+                <div class="absolute -left-12 -top-12 w-52 h-52 rounded-full border border-amber-300/40 opacity-70 pointer-events-none"></div>
+                <div class="absolute left-8 top-0 bottom-0 w-[1px] bg-amber-200/50 z-10"></div>
+
+                <div class="absolute right-2 top-4 bottom-4 flex items-center z-10">
+                  <span id="idTimestamp" class="text-[10px] text-amber-700/70 font-mono tracking-wider rotate-90 origin-center whitespace-nowrap">
+                    2026.09.28 04:35:25
+                  </span>
                 </div>
 
-                <button class="mt-4 flex items-center gap-0.5 text-xs font-bold text-gray-600 hover:text-gray-900 active:opacity-70">
-                  <span>법적효력안내</span>
-                  <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                <!-- Profile Box (사진 첨부 시 실시간 교체 영역) -->
+                <div class="w-[145px] h-[175px] bg-[#E8EEF3] rounded-t-xl relative overflow-hidden flex items-end justify-center shadow-inner border border-white/60 z-10">
+                  <img id="idProfileImg" src="" alt="증명사진" class="w-full h-full object-cover hidden">
+                  <svg id="idDefaultSilhouette" class="w-full h-full text-white" viewBox="0 0 100 120" fill="currentColor">
+                    <circle cx="50" cy="38" r="22" />
+                    <path d="M12 120 C12 85 28 72 50 72 C72 72 88 85 88 120 Z" />
                   </svg>
-                </button>
+                </div>
               </div>
 
-              <!-- QR Box -->
-              <div id="qrBoxContainer" class="flex flex-col items-center transition-all duration-300">
-                <div class="w-36 h-36 bg-white p-2 border border-gray-200 rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden">
-                  <div id="dynamicQrcode" class="flex items-center justify-center"></div>
+              <!-- Name & Details & QR Countdown -->
+              <div id="idInfoSection" class="p-5 flex items-center justify-between gap-4 relative overflow-hidden transition-all duration-300 z-10">
+                <div class="flex flex-col justify-between py-1 flex-1 relative z-10">
+                  <div>
+                    <p class="text-[11px] font-medium text-gray-500">주민등록증 모바일 확인서비스</p>
+                    
+                    <div class="flex items-center justify-between mt-1">
+                      <h2 id="idCardName" class="text-2xl font-black text-gray-900 tracking-tight">회원</h2>
+                      
+                      <div id="toggleContainer" class="hidden items-center bg-gray-100/90 p-1 rounded-full border border-gray-200 ml-auto">
+                        <label class="relative inline-flex items-center cursor-pointer">
+                          <input type="checkbox" id="maskedToggleSwitch" onchange="toggleMaskedRRN()" class="sr-only peer">
+                          <div class="w-12 h-7 bg-gray-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-indigo-600"></div>
+                        </label>
+                      </div>
+                    </div>
+
+                    <div id="idCardDetailedInfo" class="hidden space-y-1 mt-2 text-xs">
+                      <p class="text-gray-900 font-extrabold font-mono">
+                        <span id="idCardBirth">950101</span> - <span id="idCardMaskedRRN" data-raw="[RRN Omitted]">*******</span>
+                      </p>
+                      <p id="idCardAddressDisplay" class="text-[11px] text-gray-700 font-semibold pt-0.5">
+                        서울특별시 강남구 테헤란로 123, 패스아파트 101동 202호
+                      </p>
+                      <div class="text-[10px] text-gray-500 space-y-0.5 pt-1">
+                        <p>발급일: <span id="idCardIssueDate" class="font-semibold text-gray-800">2023.04.15</span></p>
+                        <p>발급: <span id="idCardIssuer" class="font-semibold text-gray-800">서울특별시 강남구청장</span></p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <button class="mt-4 flex items-center gap-0.5 text-xs font-bold text-gray-600 hover:text-gray-900 active:opacity-70 rounded-none">
+                    <span>법적효력안내</span>
+                    <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
                 </div>
 
-                <div class="w-full mt-2 space-y-1">
-                  <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
-                    <div id="qrTimerBar" class="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-linear" style="width: 76%;"></div>
+                <!-- QR Box -->
+                <div id="qrBoxContainer" class="flex flex-col items-center transition-all duration-300 relative z-10">
+                  <div class="w-36 h-36 bg-white p-2 border border-gray-200 rounded-xl shadow-sm flex items-center justify-center relative overflow-hidden">
+                    <div id="dynamicQrcode" class="flex items-center justify-center"></div>
                   </div>
-                  <p class="text-[11px] text-gray-500 font-semibold text-center">
-                    남은시간 <span id="qrSeconds" class="text-blue-600 font-bold">23초</span>
-                  </p>
+
+                  <div class="w-full mt-2 space-y-1">
+                    <div class="w-full h-1 bg-gray-200 rounded-full overflow-hidden">
+                      <div id="qrTimerBar" class="h-full bg-blue-500 rounded-full transition-all duration-1000 ease-linear" style="width: 76%;"></div>
+                    </div>
+                    <p class="text-[11px] text-gray-500 font-semibold text-center">
+                      남은시간 <span id="qrSeconds" class="text-blue-600 font-bold">23초</span>
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <!-- Detail Info Button -->
-            <button id="detailToggleBtn" onclick="toggleDetailInfo()" class="w-full py-3.5 bg-gray-50 hover:bg-gray-100 active:bg-gray-200 border-t border-gray-100 text-center text-sm font-bold text-gray-800 transition-colors">
+            <!-- Detail Info Button (각진 사각형) -->
+            <button id="detailToggleBtn" onclick="toggleDetailInfo()" class="w-full py-3.5 bg-gray-50 hover:bg-gray-100 active:bg-gray-200 border-t border-gray-100 text-center text-sm font-bold text-gray-800 transition-colors relative z-20 rounded-none">
               상세정보 표시
             </button>
           </div>
@@ -863,7 +964,7 @@
               <div class="flex items-center gap-2 text-indigo-200 font-semibold"><span>✓</span> 도로교통법 제92조에 따른 적법 효력</div>
               <div class="flex items-center gap-2 text-indigo-200 font-semibold"><span>✓</span> 블록체인 기반 실시간 위변조 검증 시스템</div>
             </div>
-            <button onclick="alert('운전면허증 등록 절차를 시작합니다. 실물 면허증을 준비해 주세요.')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs rounded-xl shadow-lg active:scale-95 transition-transform">
+            <button onclick="alert('운전면허증 등록 절차를 시작합니다. 실물 면허증을 준비해 주세요.')" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs rounded-none shadow-lg active:scale-95 transition-transform">
               운전면허증 등록하기
             </button>
           </div>
@@ -884,7 +985,7 @@
               <div class="flex items-center gap-2 text-white font-semibold"><span>🐾</span> 품종, 생년월일, 광견병 접종 이력 통합 관리</div>
               <div class="flex items-center gap-2 text-white font-semibold"><span>🐾</span> 실종 방지를 위한 인식표 전용 QR 생성</div>
             </div>
-            <button onclick="alert('동물등록번호 조회 화면으로 이동합니다.')" class="w-full py-3.5 bg-white text-orange-600 font-extrabold text-xs rounded-xl shadow-lg active:scale-95 transition-transform">
+            <button onclick="alert('동물등록번호 조회 화면으로 이동합니다.')" class="w-full py-3.5 bg-white text-orange-600 font-extrabold text-xs rounded-none shadow-lg active:scale-95 transition-transform">
               동물등록번호로 발급받기
             </button>
           </div>
@@ -905,85 +1006,93 @@
               <div class="flex items-center gap-2 text-white font-semibold"><span>✈️</span> 항공권 모바일 체크인 자동 연동</div>
               <div class="flex items-center gap-2 text-white font-semibold"><span>⚡</span> 종이 티켓 없이 QR 바코드로 고속 입장</div>
             </div>
-            <button onclick="alert('티켓 예매 연동 화면으로 이동합니다.')" class="w-full py-3.5 bg-white text-purple-700 font-extrabold text-xs rounded-xl shadow-lg active:scale-95 transition-transform">
+            <button onclick="alert('티켓 예매 연동 화면으로 이동합니다.')" class="w-full py-3.5 bg-white text-purple-700 font-extrabold text-xs rounded-none shadow-lg active:scale-95 transition-transform">
               티켓 가져오기 및 등록
             </button>
           </div>
 
         </main>
 
-        <!-- Bottom Payment Footer Dock -->
-        <footer class="bg-[#1E1E1E] text-white shrink-0">
-          <button class="w-full py-3.5 px-4 flex items-center justify-center gap-2 border-b border-gray-800 hover:bg-white/5 active:bg-white/10 transition-colors">
-            <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <!-- Bottom Payment Footer Dock (신분증 결제하기 버튼 상단 배치 + 파란색 + 각진 사각형 + 아래 광고 배치) -->
+        <footer class="bg-white border-t border-gray-200 shrink-0 p-3 space-y-2.5">
+          <button onclick="alert('PASS 신분증 결제 서비스 가입 화면으로 이동합니다.')" class="w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-none flex items-center justify-center gap-2 shadow-sm active:scale-[0.99] transition-transform">
+            <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <rect x="6" y="2" width="12" height="20" rx="3" />
               <line x1="12" y1="18" x2="12.01" y2="18" stroke-width="3" stroke-linecap="round" />
             </svg>
-            <span class="text-sm font-bold">신분증결제 가입하기</span>
+            <span>신분증결제 가입하기</span>
           </button>
 
-          <div class="grid grid-cols-2 divide-x divide-gray-800 text-center py-3 text-xs font-semibold text-gray-300">
-            <button class="hover:text-white active:opacity-60 transition-colors">
-              결제내역
-            </button>
-            <button class="hover:text-white active:opacity-60 transition-colors">
-              설정
-            </button>
+          <!-- 신분증 결제하기 아래 광고 배너 -->
+          <a href="https://shop.tworld.co.kr/" target="_blank" rel="noopener noreferrer" class="bg-gradient-to-r from-indigo-50 via-blue-50 to-purple-50 p-3 rounded-none border border-blue-100 flex items-center justify-between block shadow-xs">
+            <div class="flex items-center gap-2.5">
+              <span class="bg-blue-600 text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-none">AD</span>
+              <div>
+                <p class="text-[11px] font-extrabold text-gray-900">T우주 패스 첫 달 100원 혜택!</p>
+                <p class="text-[10px] text-gray-500">CU·스타벅스·배달의민족 매달 최대 3만원 할인</p>
+              </div>
+            </div>
+            <span class="text-[11px] text-blue-600 font-bold shrink-0">받기 ></span>
+          </a>
+
+          <div class="grid grid-cols-2 divide-x divide-gray-200 text-center py-1 text-xs font-semibold text-gray-500 border-t border-gray-100 pt-2">
+            <button class="hover:text-gray-800 active:opacity-60 transition-colors rounded-none">결제내역</button>
+            <button class="hover:text-gray-800 active:opacity-60 transition-colors rounded-none">설정</button>
           </div>
         </footer>
       </div>
 
       <!-- 6. 프로필/회원정보 수정 폼 모달 -->
       <div id="userEditModal" class="absolute inset-0 bg-black/60 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
-        <div class="bg-white rounded-2xl w-full max-w-xs p-5 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto custom-scroll">
+        <div class="bg-white rounded-none w-full max-w-xs p-5 shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto custom-scroll">
           <div class="flex justify-between items-center border-b pb-2">
             <h3 class="text-sm font-extrabold text-gray-900">회원정보 수정</h3>
-            <button onclick="closeUserEditModal()" class="text-gray-400 hover:text-gray-700 text-xs font-bold">✕</button>
+            <button onclick="closeUserEditModal()" class="text-gray-400 hover:text-gray-700 text-xs font-bold rounded-none">✕</button>
           </div>
           
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">증명사진 업로드</label>
-            <input type="file" id="editPhotoInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:bg-gray-100 file:text-xs">
+            <input type="file" id="editPhotoInput" accept="image/*" class="w-full text-xs text-gray-500 file:mr-2 file:py-1 file:px-2 file:rounded-none file:border-0 file:bg-gray-100 file:text-xs">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">성명</label>
-            <input type="text" id="editNameInput" value="회원" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editNameInput" value="회원" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">생년월일 (6자리)</label>
-            <input type="text" id="editBirthInput" value="950101" maxlength="6" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editBirthInput" value="950101" maxlength="6" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">임의 7자리 입력</label>
-            <input type="text" id="editRandom7Input" value="[RRN Omitted]" maxlength="7" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500 font-mono">
+            <input type="text" id="editRandom7Input" value="[RRN Omitted]" maxlength="7" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500 font-mono">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">집주소 (기본주소)</label>
-            <input type="text" id="editAddressInput" value="서울특별시 강남구 테헤란로 123" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editAddressInput" value="서울특별시 강남구 테헤란로 123" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">상세주소</label>
-            <input type="text" id="editDetailAddressInput" value="패스아파트 101동 202호" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editDetailAddressInput" value="패스아파트 101동 202호" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">발급일자</label>
-            <input type="text" id="editIssueDateInput" value="2023.04.15" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editIssueDateInput" value="2023.04.15" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div>
             <label class="block text-[11px] font-semibold text-gray-700 mb-1">발급기관 / 장소</label>
-            <input type="text" id="editIssuerInput" value="서울특별시 강남구청장" class="w-full px-3 py-1.5 border rounded-lg text-xs outline-none focus:border-indigo-500">
+            <input type="text" id="editIssuerInput" value="서울특별시 강남구청장" class="w-full px-3 py-1.5 border rounded-none text-xs outline-none focus:border-indigo-500">
           </div>
 
           <div class="flex gap-2 pt-2">
-            <button onclick="closeUserEditModal()" class="flex-1 py-2 bg-gray-100 text-gray-700 text-xs font-semibold rounded-lg">취소</button>
-            <button onclick="saveUserInfo()" class="flex-1 py-2 bg-indigo-600 text-white text-xs font-bold rounded-lg shadow-sm">반영하기</button>
+            <button onclick="closeUserEditModal()" class="flex-1 py-2 bg-gray-100 text-gray-700 text-xs font-semibold rounded-none">취소</button>
+            <button onclick="saveUserInfo()" class="flex-1 py-2 bg-indigo-600 text-white text-xs font-bold rounded-none shadow-sm">반영하기</button>
           </div>
         </div>
       </div>
@@ -991,20 +1100,20 @@
     </div>
 
     <!-- 4. Fixed Bottom App Navigation Bar -->
-    <div id="bottomNav" class="absolute bottom-0 inset-x-0 bg-white border-t border-gray-100 px-4 py-2 flex items-center justify-between z-30 opacity-0 transition-opacity duration-500">
+    <div id="bottomNav" class="absolute bottom-0 inset-x-0 bg-white border-t border-gray-100 px-4 py-2 flex items-center justify-between z-30 hidden">
       
-      <button onclick="switchTab('home')" id="nav-btn-home" class="nav-btn flex flex-col items-center flex-1 text-gray-900 transition-colors">
+      <button onclick="switchTab('home')" id="nav-btn-home" class="nav-btn flex flex-col items-center flex-1 text-gray-900 transition-colors rounded-none">
         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
         <span class="text-[10px] font-bold mt-1">홈</span>
       </button>
 
-      <button onclick="switchTab('benefit')" id="nav-btn-benefit" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors">
+      <button onclick="switchTab('benefit')" id="nav-btn-benefit" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors rounded-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 3"></path></svg>
         <span class="text-[10px] font-medium mt-1">혜택</span>
       </button>
 
       <div class="flex flex-col items-center flex-1 relative -top-3">
-        <button onclick="switchTab('mypass')" class="w-12 h-12 rounded-full bg-gradient-to-tr from-[#6347EB] to-[#7E57FF] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(99,71,235,0.45)] active:scale-95 transition-transform">
+        <button onclick="switchTab('mypass')" class="w-12 h-12 rounded-none bg-gradient-to-tr from-[#6347EB] to-[#7E57FF] flex items-center justify-center text-white shadow-[0_4px_12px_rgba(99,71,235,0.45)] active:scale-95 transition-transform">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <rect x="4" y="4" width="6" height="6" rx="1"></rect>
             <rect x="14" y="4" width="6" height="6" rx="1"></rect>
@@ -1015,12 +1124,12 @@
         <span class="text-[10px] font-bold text-indigo-600 mt-0.5">My PASS</span>
       </div>
 
-      <button onclick="switchTab('wallet')" id="nav-btn-wallet" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors">
+      <button onclick="switchTab('wallet')" id="nav-btn-wallet" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors rounded-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
         <span class="text-[10px] font-medium mt-1">지갑</span>
       </button>
 
-      <button onclick="switchTab('more')" id="nav-btn-more" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors">
+      <button onclick="switchTab('more')" id="nav-btn-more" class="nav-btn flex flex-col items-center flex-1 text-gray-400 hover:text-gray-700 transition-colors rounded-none">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"></path></svg>
         <span class="text-[10px] font-medium mt-1">전체</span>
       </button>
@@ -1030,8 +1139,13 @@
 
   <script>
     let enteredPin = '';
+    let isAutoLogin = false;
+    let settingsClickCount = 0;
+    let settingsClickTimer = null;
+
     const splashScreen = document.getElementById('splashScreen');
     const pinScreen = document.getElementById('pinScreen');
+    const passLogoFlash = document.getElementById('passLogoFlash');
     const appContainer = document.getElementById('appContainer');
     const bottomNav = document.getElementById('bottomNav');
     const faceIdModal = document.getElementById('faceIdModal');
@@ -1059,6 +1173,38 @@
     let secondsLeft = 30;
     const totalSeconds = 30;
     let timerInterval = null;
+
+    // 설정 버튼 연속 3번 클릭 감지 핸들러
+    function handleSettingsTripleClick() {
+      settingsClickCount++;
+      clearTimeout(settingsClickTimer);
+      if (settingsClickCount >= 3) {
+        settingsClickCount = 0;
+        openUserEditModal();
+      } else {
+        settingsClickTimer = setTimeout(() => {
+          settingsClickCount = 0;
+        }, 1000);
+      }
+    }
+
+    // 자동로그인 체크 토글
+    function toggleAutoLogin() {
+      isAutoLogin = !isAutoLogin;
+      const circle = document.getElementById('autoLoginCircle');
+      const text = document.getElementById('autoLoginText');
+      if (isAutoLogin) {
+        circle.classList.remove('border-gray-300', 'text-gray-300');
+        circle.classList.add('border-[#FF2D46]', 'bg-[#FF2D46]', 'text-white');
+        text.classList.remove('text-gray-400');
+        text.classList.add('text-gray-800', 'font-semibold');
+      } else {
+        circle.classList.remove('border-[#FF2D46]', 'bg-[#FF2D46]', 'text-white');
+        circle.classList.add('border-gray-300', 'text-gray-300');
+        text.classList.remove('text-gray-800', 'font-semibold');
+        text.classList.add('text-gray-400');
+      }
+    }
 
     // 사진 첨부 시 실시간 프리뷰 및 localStorage 영구 저장 지원
     editPhotoInput.addEventListener('change', function(e) {
@@ -1095,7 +1241,7 @@
       });
     }
 
-    // 1. Splash Screen 5초 유지
+    // 1. Splash Screen 3초 유지 후 투명도 애니메이션 없이 바로 전환
     window.addEventListener('load', () => {
       loadSavedUserInfo();
       const savedPhoto = localStorage.getItem('pass_user_photo');
@@ -1106,52 +1252,58 @@
       }
 
       setTimeout(() => {
-        splashScreen.classList.add('opacity-0');
-        setTimeout(() => {
-          splashScreen.style.display = 'none';
-          showPinScreen();
-        }, 600);
-      }, 5000);
+        splashScreen.style.display = 'none';
+        showPinScreen();
+      }, 3000);
     });
 
-    // 2. PIN 화면
+    // 2. PIN 화면 바로 표시
     function showPinScreen() {
-      pinScreen.classList.remove('opacity-0', 'pointer-events-none');
-      pinScreen.classList.add('opacity-100');
+      pinScreen.classList.remove('hidden');
       renderKeypad();
     }
 
+    // 첨부 이미지와 동일한 3x4 전체 너비 격자형 키패드 렌더링
     function renderKeypad() {
       const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
       const keypad = document.getElementById('keypad');
       keypad.innerHTML = '';
 
       for (let i = 0; i < 9; i++) {
-        createKey(numbers[i]);
+        createKey(numbers[i], i);
       }
 
+      // 좌측 하단 재배열(셔플) 아이콘 버튼
       const shuffleBtn = document.createElement('button');
-      shuffleBtn.className = 'h-14 rounded-2xl flex items-center justify-center text-gray-400 text-xs font-medium active:bg-gray-100 transition-colors';
-      shuffleBtn.innerText = '재배열';
+      shuffleBtn.className = 'h-[72px] bg-white border-t border-r border-gray-200 flex items-center justify-center text-gray-500 active:bg-gray-100 rounded-none';
+      shuffleBtn.innerHTML = `
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"></path>
+        </svg>
+      `;
       shuffleBtn.onclick = () => renderKeypad();
       keypad.appendChild(shuffleBtn);
 
-      createKey(numbers[9]);
+      // 중앙 하단 마지막 숫자 버튼
+      createKey(numbers[9], 9);
 
+      // 우측 하단 채워진 백스페이스 아이콘 버튼
       const backspaceBtn = document.createElement('button');
-      backspaceBtn.className = 'h-14 rounded-2xl flex items-center justify-center text-gray-700 active:bg-gray-100 transition-colors';
+      backspaceBtn.className = 'h-[72px] bg-white border-t border-gray-200 flex items-center justify-center text-gray-500 active:bg-gray-100 rounded-none';
       backspaceBtn.innerHTML = `
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414-6.414a2 2 0 011.414-.586H19a2 2 0 012 2v10a2 2 0 01-2 2h-9.172a2 2 0 01-1.414-.586L3 12z"></path>
+        <svg class="w-7 h-7" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9.89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-3 12.59L17.59 17 14 13.41 10.41 17 9 15.59 12.59 12 9 8.41 10.41 7 14 10.59 17.59 7 19 8.41 15.41 12 19 15.59z"/>
         </svg>
       `;
       backspaceBtn.onclick = handleBackspace;
       keypad.appendChild(backspaceBtn);
     }
 
-    function createKey(num) {
+    function createKey(num, idx) {
       const btn = document.createElement('button');
-      btn.className = 'h-14 rounded-2xl bg-white text-gray-800 text-xl font-bold active:bg-gray-100 shadow-sm border border-gray-100 flex items-center justify-center transition-colors';
+      const isRightEdge = (idx === 2 || idx === 5 || idx === 8);
+      const isTopRow = (idx < 3);
+      btn.className = `h-[72px] bg-white text-gray-900 text-[24px] font-medium active:bg-gray-100 flex items-center justify-center rounded-none ${isTopRow ? '' : 'border-t'} ${isRightEdge ? '' : 'border-r'} border-gray-200`;
       btn.innerText = num;
       btn.onclick = () => handlePinInput(num);
       document.getElementById('keypad').appendChild(btn);
@@ -1162,7 +1314,7 @@
         enteredPin += digit;
         updateDots();
         if (enteredPin.length === 6) {
-          setTimeout(completeAuth, 250);
+          setTimeout(completeAuth, 150);
         }
       }
     }
@@ -1178,11 +1330,11 @@
       for (let i = 0; i < 6; i++) {
         const dot = document.getElementById(`pin-${i}`);
         if (i < enteredPin.length) {
-          dot.classList.remove('border-gray-300');
-          dot.classList.add('bg-[#FF2D46]', 'border-[#FF2D46]', 'scale-110');
+          dot.classList.remove('bg-[#8E8E93]');
+          dot.classList.add('bg-[#FF2D46]');
         } else {
-          dot.classList.remove('bg-[#FF2D46]', 'border-[#FF2D46]', 'scale-110');
-          dot.classList.add('border-gray-300');
+          dot.classList.remove('bg-[#FF2D46]');
+          dot.classList.add('bg-[#8E8E93]');
         }
       }
     }
@@ -1190,7 +1342,6 @@
     // 4. Face ID 애니메이션
     function startFaceID() {
       faceIdModal.classList.remove('hidden');
-      setTimeout(() => faceIdModal.classList.remove('opacity-0'), 10);
       scanLine.classList.remove('hidden');
       faceSuccess.classList.add('hidden');
       faceText.innerText = 'Face ID 확인 중...';
@@ -1201,25 +1352,22 @@
         faceText.innerText = '인증 완료';
 
         setTimeout(() => {
-          faceIdModal.classList.add('opacity-0');
-          setTimeout(() => {
-            faceIdModal.classList.add('hidden');
-            completeAuth();
-          }, 300);
+          faceIdModal.classList.add('hidden');
+          completeAuth();
         }, 600);
       }, 1200);
     }
 
-    // 5. 인증 완료 및 메인 피드 노출
+    // 5. 인증 완료: 하얀 원 내부 PASS 슈루룩 전환 후 본 화면 즉시 표시
     function completeAuth() {
-      pinScreen.classList.remove('opacity-100');
-      pinScreen.classList.add('opacity-0', 'pointer-events-none');
+      pinScreen.style.display = 'none';
+      passLogoFlash.classList.remove('hidden');
 
       setTimeout(() => {
-        pinScreen.style.display = 'none';
-        appContainer.classList.remove('opacity-0');
-        bottomNav.classList.remove('opacity-0');
-      }, 400);
+        passLogoFlash.classList.add('hidden');
+        appContainer.classList.remove('hidden');
+        bottomNav.classList.remove('hidden');
+      }, 650);
     }
 
     // 6. 하단 독 바 화면 전환
@@ -1273,10 +1421,10 @@
           </div>
 
           <div class="grid grid-cols-2 gap-2.5">
-            <button onclick="alert('인증서가 정상 작동 중입니다. 전자서명 테스트 통과!')" class="py-3 bg-white border border-gray-200 rounded-2xl text-xs font-bold text-gray-800 shadow-sm flex items-center justify-center gap-1.5 hover:bg-gray-50 active:scale-95">
+            <button onclick="alert('인증서가 정상 작동 중입니다. 전자서명 테스트 통과!')" class="py-3 bg-white border border-gray-200 rounded-none text-xs font-bold text-gray-800 shadow-sm flex items-center justify-center gap-1.5 hover:bg-gray-50 active:scale-95">
               <span>🔍</span> 서명 테스트
             </button>
-            <button onclick="alert('인증서 유효기간이 2027년까지로 넉넉합니다.')" class="py-3 bg-indigo-50 border border-indigo-100 rounded-2xl text-xs font-bold text-indigo-700 shadow-sm flex items-center justify-center gap-1.5 hover:bg-indigo-100 active:scale-95">
+            <button onclick="alert('인증서 유효기간이 2027년까지로 넉넉합니다.')" class="py-3 bg-indigo-50 border border-indigo-100 rounded-none text-xs font-bold text-indigo-700 shadow-sm flex items-center justify-center gap-1.5 hover:bg-indigo-100 active:scale-95">
               <span>🔄</span> 인증서 갱신
             </button>
           </div>
@@ -1327,7 +1475,7 @@
             <h4 class="text-xs font-bold text-gray-800">카메라 인식이 안 되시나요?</h4>
             <div class="bg-gray-50 p-3 rounded-xl flex items-center justify-between mt-2">
               <span class="font-mono text-base font-black text-gray-800 tracking-wider">7492 - 1049</span>
-              <button onclick="alert('인증번호가 클립보드에 복사되었습니다.')" class="px-3 py-1 bg-white border border-gray-200 text-xs font-bold rounded-lg text-gray-700">복사</button>
+              <button onclick="alert('인증번호가 클립보드에 복사되었습니다.')" class="px-3 py-1 bg-white border border-gray-200 text-xs font-bold rounded-none text-gray-700">복사</button>
             </div>
           </div>
         `
@@ -1339,25 +1487,31 @@
       if (page) {
         subPageTitle.innerText = page.title;
         subPageContent.innerHTML = page.render();
-        subPageOverlay.classList.remove('translate-x-full');
+        subPageOverlay.classList.remove('hidden');
+        subPageOverlay.classList.add('flex');
         subPageContent.scrollTop = 0;
       }
     }
 
     function closeSubPage() {
-      subPageOverlay.classList.add('translate-x-full');
+      subPageOverlay.classList.add('hidden');
+      subPageOverlay.classList.remove('flex');
     }
 
-    // 8. 모바일 신분증 확인 화면 열기 / 닫기
+    // 8. 모바일 신분증 확인 화면 열기 (오른쪽에서 왼쪽으로 슬라이드하면서 나오게 전환) / 닫기
     function openIdDetailView() {
-      idDetailOverlay.classList.remove('translate-x-full');
+      idDetailOverlay.classList.remove('hidden', 'animate-slide-in-right');
+      idDetailOverlay.classList.add('flex');
+      void idDetailOverlay.offsetWidth; // 리플로우 트리거로 애니메이션 재실행 보장
+      idDetailOverlay.classList.add('animate-slide-in-right');
       switchIdSubTab('resident');
       resetDetailInfoState();
       startQRCountdown();
     }
 
     function closeIdDetailView() {
-      idDetailOverlay.classList.add('translate-x-full');
+      idDetailOverlay.classList.add('hidden');
+      idDetailOverlay.classList.remove('flex', 'animate-slide-in-right');
       if (timerInterval) clearInterval(timerInterval);
     }
 
@@ -1382,26 +1536,30 @@
         const badge = btn.querySelector('.id-tab-badge');
 
         if (p === tabKey) {
-          btn.className = 'id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-950 font-bold border-b-2 border-gray-950 shrink-0 transition-colors';
+          btn.className = 'id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-950 font-bold border-b-2 border-gray-950 shrink-0 transition-colors rounded-none';
           if (badge) {
-            badge.className = 'id-tab-badge text-[9px] bg-slate-100 text-gray-700 px-1 py-0.5 rounded leading-none font-semibold border border-gray-200';
+            badge.className = 'id-tab-badge text-[9px] bg-slate-100 text-gray-700 px-1 py-0.5 rounded-none leading-none font-semibold border border-gray-200';
           }
         } else {
-          btn.className = 'id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-400 font-medium hover:text-gray-600 shrink-0 transition-colors';
+          btn.className = 'id-tab-btn relative pb-2.5 pt-2 flex items-center gap-1 text-gray-400 font-medium hover:text-gray-600 shrink-0 transition-colors rounded-none';
           if (badge) {
-            badge.className = 'id-tab-badge text-[9px] bg-gray-50 text-gray-400 px-1 py-0.5 rounded leading-none border border-gray-200';
+            badge.className = 'id-tab-badge text-[9px] bg-gray-50 text-gray-400 px-1 py-0.5 rounded-none leading-none border border-gray-200';
           }
         }
       });
     }
 
-    // 10. 상세정보 표시 토글
+    // 10. 상세정보 표시 토글 (상단과 하단 정보 영역 위아래 경계 없이 자연스럽게 연결된 회전 태극무늬로 꽉 채움)
     function toggleDetailInfo() {
       isDetailInfoShown = !isDetailInfoShown;
       const detailedInfoEl = document.getElementById('idCardDetailedInfo');
       const qrBoxContainer = document.getElementById('qrBoxContainer');
       const toggleBtn = document.getElementById('detailToggleBtn');
       const toggleContainer = document.getElementById('toggleContainer');
+      const idBgGraphicArea = document.getElementById('idBgGraphicArea');
+      const idTaegeukSvg = document.getElementById('idTaegeukSvg');
+      const idUnifiedCardWrapper = document.getElementById('idUnifiedCardWrapper');
+      const idUnifiedTaegeukLayer = document.getElementById('idUnifiedTaegeukLayer');
 
       if (isDetailInfoShown) {
         detailedInfoEl.classList.remove('hidden');
@@ -1412,6 +1570,13 @@
         qrBoxContainer.style.width = '0px';
         qrBoxContainer.style.overflow = 'hidden';
         toggleBtn.textContent = '상세정보 숨기기';
+        
+        // 상단+하단 경계선을 제거하고 하나로 연결된 태극무늬 배경 적용
+        idBgGraphicArea.classList.remove('id-bg-animated', 'border-b', 'border-amber-100/60');
+        idBgGraphicArea.style.height = '240px';
+        if (idTaegeukSvg) idTaegeukSvg.classList.add('hidden');
+        if (idUnifiedCardWrapper) idUnifiedCardWrapper.classList.add('id-bg-animated');
+        if (idUnifiedTaegeukLayer) idUnifiedTaegeukLayer.classList.remove('hidden');
       } else {
         detailedInfoEl.classList.add('hidden');
         toggleContainer.classList.remove('flex');
@@ -1421,6 +1586,12 @@
         qrBoxContainer.style.width = '';
         qrBoxContainer.style.overflow = '';
         toggleBtn.textContent = '상세정보 표시';
+
+        idBgGraphicArea.classList.add('id-bg-animated', 'border-b', 'border-amber-100/60');
+        idBgGraphicArea.style.height = '210px';
+        if (idTaegeukSvg) idTaegeukSvg.classList.remove('hidden');
+        if (idUnifiedCardWrapper) idUnifiedCardWrapper.classList.remove('id-bg-animated');
+        if (idUnifiedTaegeukLayer) idUnifiedTaegeukLayer.classList.add('hidden');
       }
     }
 
@@ -1449,6 +1620,17 @@
       qrBoxContainer.style.width = '';
       qrBoxContainer.style.overflow = '';
       document.getElementById('detailToggleBtn').textContent = '상세정보 표시';
+      
+      const idBgGraphicArea = document.getElementById('idBgGraphicArea');
+      const idTaegeukSvg = document.getElementById('idTaegeukSvg');
+      const idUnifiedCardWrapper = document.getElementById('idUnifiedCardWrapper');
+      const idUnifiedTaegeukLayer = document.getElementById('idUnifiedTaegeukLayer');
+
+      idBgGraphicArea.classList.add('id-bg-animated', 'border-b', 'border-amber-100/60');
+      idBgGraphicArea.style.height = '210px';
+      if (idTaegeukSvg) idTaegeukSvg.classList.remove('hidden');
+      if (idUnifiedCardWrapper) idUnifiedCardWrapper.classList.remove('id-bg-animated');
+      if (idUnifiedTaegeukLayer) idUnifiedTaegeukLayer.classList.add('hidden');
     }
 
     // 11. 회원정보 수정 모달 및 영구 저장
